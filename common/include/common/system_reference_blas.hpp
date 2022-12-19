@@ -163,11 +163,12 @@ scalar_t dot(const int n, const scalar_t x[], const int incX,
   return static_cast<scalar_t>(func(n, x, incX, y, incY));
 }
 
-/* Note: Not a template hence inlined to avoid having more than one definition */
-inline float sdsdot(const int n, const float sb, const float x[], const int incX,
-             const float y[], const int incY) {
-    auto func = &cblas_sdsdot;
-    return static_cast<float>(func(n, sb, x, incX, y, incY));
+/* Note: Not a template hence inlined to avoid having more than one definition
+ */
+inline float sdsdot(const int n, const float sb, const float x[],
+                    const int incX, const float y[], const int incY) {
+  auto func = &cblas_sdsdot;
+  return static_cast<float>(func(n, sb, x, incX, y, incY));
 }
 
 template <typename scalar_t>
@@ -210,7 +211,7 @@ void rotg(scalar_t *sa, scalar_t *sb, scalar_t *c, scalar_t *s) {
 
 template <typename scalar_t>
 void rotmg(scalar_t *d1, scalar_t *d2, scalar_t *x1, scalar_t *y1,
-          scalar_t param[]) {
+           scalar_t param[]) {
   auto func = blas_system_function<scalar_t>(&cblas_srotmg, &cblas_drotmg);
   func(d1, d2, x1, *y1, param);
 }
@@ -231,6 +232,15 @@ void swap(const int n, scalar_t x[], const int incX, scalar_t y[],
 // =======
 // Level 2
 // =======
+template <typename scalar_t>
+void gbmv(const char *trans, int m, int n, int kl, int ku, scalar_t alpha,
+          const scalar_t a[], int lda, const scalar_t x[], int incX,
+          scalar_t beta, scalar_t y[], int incY) {
+  auto func = blas_system_function<scalar_t>(&cblas_sgbmv, &cblas_dgbmv);
+  func(CblasColMajor, c_trans(*trans), m, n, kl, ku, alpha, a, lda, x, incX,
+       beta, y, incY);
+}
+
 template <typename scalar_t>
 void gemv(const char *trans, int m, int n, scalar_t alpha, const scalar_t a[],
           int lda, const scalar_t x[], int incX, scalar_t beta, scalar_t y[],

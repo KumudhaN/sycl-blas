@@ -19,7 +19,7 @@
 # *
 # *  SYCL-BLAS: BLAS implementation using SYCL
 # *
-# *  @filename executor_base.hpp
+# *  @filename CMakeLists.txt
 # *
 # **************************************************************************/
 
@@ -38,6 +38,7 @@ set(SYCL_UNITTEST_SRCS
   ${SYCLBLAS_UNITTEST}/blas1/blas1_rotg_test.cpp
   ${SYCLBLAS_UNITTEST}/blas1/blas1_sdsdot_test.cpp
   # Blas 2 tests
+  ${SYCLBLAS_UNITTEST}/blas2/blas2_gbmv_test.cpp
   ${SYCLBLAS_UNITTEST}/blas2/blas2_gemv_test.cpp
   ${SYCLBLAS_UNITTEST}/blas2/blas2_ger_test.cpp
   ${SYCLBLAS_UNITTEST}/blas2/blas2_syr_test.cpp

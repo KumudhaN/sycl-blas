@@ -39,10 +39,12 @@ endif()
 option(INSTALL_HEADER_ONLY "Install SYCL-BLAS as a header only library" OFF)
 
 set(BUILD_SHARED_LIBS ON CACHE BOOL "")
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
+
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations  -Wno-deprecated-copy-with-user-provided-copy") 
 
 if(DEFINED SYSTEM_BLAS_ROOT)
   message(DEPRECATION
@@ -68,13 +70,14 @@ endif()
 
 # Setup datatypes, workgroup sizes and other options.
 # NB: This has to be included before CmakeFunctionHelper as it declares various options.
-include(ConfigureSYCLBLAS)
-include(SYCL)
-find_package(PythonInterp 3 REQUIRED)
+if (NOT INSTALL_HEADER_ONLY)
+  include(ConfigureSYCLBLAS)
+  include(SYCL)
+  find_package(PythonInterp 3 REQUIRED)
+endif()
 
 if (MSVC)
   # The device compiler needs C++14 to parse the Windows headers
-  set(CMAKE_CXX_STANDARD 14)
   set(BUILD_SHARED_LIBS FALSE CACHE BOOL
     "Force SYCL-BLAS to be built as a static library on Windows"
     FORCE
@@ -189,10 +192,7 @@ if (INSTALL_HEADER_ONLY)
     FILES_MATCHING PATTERN "*.hpp"
   )
 endif()
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/computecpp-sdk/include/vptr
-  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-  COMPONENT sycl_blas
-)
+
 install(FILES ${version_file} DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(EXPORT sycl_blas
   DESTINATION ${CMAKE_INSTALL_PREFIX}
