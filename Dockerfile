@@ -65,7 +65,7 @@ CMD cd /sycl-blas && \
         COMPUTECPP_TARGET="intel:cpu" ./build.sh --compiler computecpp --computecppdir /tmp/ComputeCpp-latest --openblas /tmp/OpenBLAS/build; \
       fi \
     elif [ "${SYCL_IMPL}" = 'DPCPP' ]; then \
-      export LD_LIBRARY_PATH="/tmp/dpcpp/lib" && ./build.sh --compiler dpcpp --openblas /tmp/OpenBLAS/build; \
+      export LD_LIBRARY_PATH="/tmp/dpcpp/lib" && mkdir -p build && cd build && cmake .. -DBLAS_ENABLE_STATIC_LIBRARY=ON -DGEMM_TALL_SKINNY_SUPPORT=OFF -DSYCL_COMPILER=dpcpp -DCMAKE_PREFIX_PATH=/tmp/OpenBLAS/build -DBLAS_ENABLE_CONST_INPUT=OFF -DCMAKE_BUILD_TYPE=Release && make && cd test && ctest -VV --timeout 1200; \
     else \
       echo "Unknown SYCL implementation ${SYCL_IMPL}"; return 1; \
     fi
